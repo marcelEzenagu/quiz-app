@@ -27,9 +27,12 @@ func Init() {
 	// collectionName := os.Getenv("TABLE_NAME")
 
 	fmt.Println("Connecting to MongoDB...")
+
 	mongoURI := os.Getenv("MONGO_URI")
 	dbName := os.Getenv("DB_NAME")
 	MongoCtx = context.Background()
+
+	fmt.Println("mongoURI: ", mongoURI)
 
 	DB, err := mongo.Connect(MongoCtx, options.Client().ApplyURI(mongoURI))
 	// client, err := mongo.Connect(context.TODO(), options.Client().ApplyURI(uri))
@@ -49,6 +52,9 @@ func Init() {
 
 	// bind out collection to our global variable for use in other methods
 	// menudb = (*mongo.Collection)(db.Database("menuDB").Collection("menu"))
+	fmt.Println(os.Getenv("QUESTIONS_COLLECTION"), "QUESTIONS_COLLECTION")
+	fmt.Println(os.Getenv("USERS_COLLECTION"), "USERS_COLLECTION")
+	fmt.Println(os.Getenv("RESULTS_COLLECTION"), "RESULTS_COLLECTION")
 
 	QuestionCollection = DB.Database(dbName).Collection(os.Getenv("QUESTIONS_COLLECTION"))
 	UsersCollection = DB.Database(dbName).Collection(os.Getenv("USERS_COLLECTION"))
