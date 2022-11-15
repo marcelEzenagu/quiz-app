@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"quiz-app/internal/mongoDB"
 	"quiz-app/internal/server"
 
@@ -8,6 +9,10 @@ import (
 	"github.com/joho/godotenv"
 )
 
+func entryMessage(c *gin.Context) {
+	// return
+	c.IndentedJSON(http.StatusOK, ("welcome"))
+}
 func main() {
 	// loading dot env
 	godotenv.Load()
@@ -30,6 +35,8 @@ func main() {
 
 	// result
 	router.GET("/result", server.ListUsersStanding)
+	// default route
+	router.GET("/", entryMessage)
 
 	router.Run("localhost:3400")
 }
