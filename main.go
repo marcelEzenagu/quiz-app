@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"os"
 	"quiz-app/internal/mongoDB"
@@ -39,5 +40,7 @@ func main() {
 	// default route
 	router.GET("/", entryMessage)
 
-	router.Run(os.Getenv("PORT"))
+	log.Fatal(router.Run(":" + os.Getenv("PORT")))
+	// router.Run(":8800"))
+
 }
