@@ -39,5 +39,5 @@ func main() {
 	// default route
 	router.GET("/", entryMessage)
 
-	router.Run(os.Getenv("LOCALHOST"))
+	router.Run(os.Getenv("PORT"))
 }
