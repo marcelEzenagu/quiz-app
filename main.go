@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"os"
 	"quiz-app/internal/mongoDB"
 	"quiz-app/internal/server"
 
@@ -38,5 +39,5 @@ func main() {
 	// default route
 	router.GET("/", entryMessage)
 
-	router.Run("localhost:3400")
+	router.Run(os.Getenv("LOCALHOST"))
 }
