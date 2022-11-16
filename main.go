@@ -29,7 +29,7 @@ func main() {
 	router.PATCH("/questions/:questionID", server.EnableQuestion)
 
 	// user
-	router.PATCH("/questions/enabled/:questionID", server.AnswerQuestion)
+	router.PATCH("/questions/submit", server.AnswerQuestion)
 	router.GET("/questions/enabled", server.GetEnabledQuestion)
 	router.POST("/users", server.CreateAccount)
 	router.GET("/users", server.ListUsers)
@@ -37,6 +37,7 @@ func main() {
 
 	// result
 	router.GET("/result", server.ListUsersStanding)
+	router.DELETE("/results/:userID", server.DeleteResult)
 	// default route
 	router.GET("/", entryMessage)
 

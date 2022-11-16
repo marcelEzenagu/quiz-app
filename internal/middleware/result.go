@@ -18,7 +18,6 @@ func ResultExists(userID string) (*models.UserAnswer, bool) {
 	if err != nil {
 		return nil, false
 	}
-	fmt.Println("userID: ", answer)
 	return answer, true
 
 }

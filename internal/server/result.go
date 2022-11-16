@@ -25,6 +25,7 @@ func AnswerQuestion(ctx *gin.Context) {
 		return
 	}
 
+	resultChannel := make(chan models.User)
 	validUser := strings.TrimSpace(userAnswer.UserID)
 	validQuestion := strings.TrimSpace(userAnswer.QuestionID)
 	validOption := strings.TrimSpace(userAnswer.ChoosedOption)
@@ -32,18 +33,32 @@ func AnswerQuestion(ctx *gin.Context) {
 	filter := bson.M{"userID": validUser}
 	oldResult, ResultExists := middleware.ResultExists(validUser)
 
+	go func() {
+
+		foundUser, isUserFound := middleware.IsUserFound(validUser)
+		if !isUserFound {
+			ctx.IndentedJSON(http.StatusExpectationFailed, "user with this userID not found")
+			return
+		}
+
+		resultChannel <- *foundUser
+	}()
 	if !ResultExists {
 		ctx.IndentedJSON(http.StatusExpectationFailed, "result for this user not found")
 		return
 
 	}
 
+	user := <-resultChannel
 	oldResult.Points = oldResult.Points + userAnswer.Points
 	data := &models.UserAnswer{
 		UserID:        validUser,
 		QuestionID:    validQuestion,
 		ChoosedOption: validOption,
 		Points:        oldResult.Points,
+		Name:          user.Name,
+		Email:         user.Email,
+		Phone:         user.Phone,
 	}
 
 	_, err := db.ResultCollection.UpdateOne(db.MongoCtx, filter, bson.M{"$set": data})
@@ -77,4 +92,26 @@ func ListUsersStanding(c *gin.Context) {
 	}
 
 	c.IndentedJSON(http.StatusOK, userAnswer)
+}
+func DeleteResult(c *gin.Context) {
+	userAnswer := []*models.UserAnswer{}
+	userId := strings.TrimSpace(c.Param("userID"))
+
+	_, resultExists := middleware.ResultExists(userId)
+
+	if !resultExists {
+		c.IndentedJSON(http.StatusExpectationFailed, "result with this userID not found")
+		return
+	}
+	filter := bson.M{"userID": userId}
+
+	err := db.DeleteOne(userAnswer, filter, db.ResultCollection)
+	if err != nil {
+		fmt.Println("error deleting user: ", err)
+		c.IndentedJSON(http.StatusInternalServerError, err.Error())
+		return
+	}
+
+	c.IndentedJSON(http.StatusAccepted, ("user deleted succesfully"))
+
 }

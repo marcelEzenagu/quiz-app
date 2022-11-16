@@ -27,6 +27,9 @@ type Answer struct {
 type UserAnswer struct {
 	QuestionID    string `bson:"questionID" json:"questionID"`
 	UserID        string `bson:"userID" json:"userID"`
+	Name          string `json:"name"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
 	Points        int64  `json:"points"`
 	ChoosedOption string `json:"choosedOption" bson:"choosedOption"`
 }
